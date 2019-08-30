@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An Amazon SNS trigger that logs the message to elastic
+Resources:
+  logsns:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs10.x
+      CodeUri: .
+      Description: An Amazon SNS trigger that logs the message to elastic
+      MemorySize: 128
+      Timeout: 20
+      Role: 'arn:aws:iam:::role/aws_lambda_elastic_cloudwatch'
+      Events:
+        SNS1:
+          Type: SNS
+          Properties:
+            Topic:
+              Ref: SNSTopic1
+      Environment:
+        Variables:
+          ELASTIC_HOST: your-host.us-east-1.es.amazonaws.com
+          ELASTIC_INDEX: index-1
+          ELASTIC_TIMEOUT_MS: '10000'
+  SNSTopic1:
+    Type: 'AWS::SNS::Topic'
